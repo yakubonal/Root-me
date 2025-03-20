@@ -1,0 +1,99 @@
+TCL QUIZ : flag = RM{c02faf23e19c6a235daeb392e326b0e6}
+
+import socket
+import time
+import re
+import string
+
+# Fonction pour chiffrer avec César
+def caesar_cipher(text, shift):
+    alphabet = string.ascii_lowercase
+    shifted_alphabet = alphabet[shift % 26:] + alphabet[:shift % 26]
+    table = str.maketrans(alphabet, shifted_alphabet)
+    return text.translate(table)
+
+# Configuration du serveur
+server_address = ("quizz.challenges.pro.root-me.org", 6001)
+
+# Nom à utiliser
+name = "John"
+name_length = len(name)
+
+# Création de la connexion socket
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.connect(server_address)
+
+# Réception du message d'introduction
+response = sock.recv(1024).decode("utf-8")
+print(response)
+
+# **Étape 1: Envoi du nom**
+sock.sendall((name + "\n").encode("utf-8"))
+time.sleep(0.5)
+
+# **Étape 2: Envoi de la longueur du nom**
+response = sock.recv(1024).decode("utf-8")
+print(response)
+
+if "Enter the number of letters in your name:" in response:
+    sock.sendall((str(name_length) + "\n").encode("utf-8"))
+    print(f"Envoyé : {name_length}")
+
+# **Étape 3: Envoi de 3 fois la longueur du nom**
+response = sock.recv(1024).decode("utf-8")
+print(response)
+
+if "Please send me the result of 3 times the answer of question 2:" in response:
+    result_q3 = name_length * 3
+    sock.sendall((str(result_q3) + "\n").encode("utf-8"))
+    print(f"Envoyé : {result_q3}")
+
+# **Étape 4: Détection du mot et comptage des voyelles**
+response = sock.recv(4096).decode("utf-8")
+print(response)
+
+match = re.search(r"'([^']+)'", response)
+if match:
+    word = match.group(1)
+    vowels_count = sum(1 for letter in word if letter.lower() in "aeiouy")
+    
+    # Envoi du nombre de voyelles
+    sock.sendall((str(vowels_count) + "\n").encode("utf-8"))
+    print(f"Envoyé : {vowels_count}")
+
+# **Étape 5: Produit des réponses précédentes**
+response = sock.recv(1024).decode("utf-8")
+print(response)
+
+if "Give me the product of all the answers of previous questions" in response:
+    final_product = name_length * result_q3 * vowels_count
+
+    # ⚠️ Modifier final_product pour qu'il soit multiple de 26
+    while final_product % 26 != 0:
+        final_product += 1  # On ajuste le shift pour qu'il soit neutre
+
+    sock.sendall((str(final_product) + "\n").encode("utf-8"))
+    print(f"Envoyé : {final_product}")
+
+# **Étape 6: Encodage César (le mot doit rester inchangé)**
+response = sock.recv(1024).decode("utf-8")
+print(response)
+
+match = re.search(r"encode the string '([^']+)' using Caesar Cipher", response)
+if match:
+    word_to_encode = match.group(1)
+
+    # ⚠️ Décalage = 0 (car final_product % 26 == 0)
+    encrypted_text = caesar_cipher(word_to_encode, final_product)
+    
+    # Envoi du texte chiffré (qui doit être identique au mot original)
+    sock.sendall((encrypted_text + "\n").encode("utf-8"))
+    print(f"Envoyé : {encrypted_text}")
+
+# **Étape 7: Récupération du message final et du flag**
+final_response = sock.recv(1024).decode("utf-8")
+print("=================================================================")
+print(final_response)
+
+# Fermeture de la connexion
+sock.close()

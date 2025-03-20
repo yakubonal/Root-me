@@ -1,0 +1,8 @@
+BankRoute : 
+
+Etape 1 : creer un compte avec l'username "aaaaa".
+Etape 2: Une fois le compte crée, allez dans "report"
+Etape 3: Colle le lien suivant : https://bankroute.challenges.pro.root-me.org/allow-user/?username=aaaaa&csrf_token=YWRtaW5uaW1kYQ==
+Etape 4: Attendre 5 minutes puis le flag devrait apparaitre lorsque tu cliques sur "view-flag"
+
+flag : RM{2969a14834545af7024f696e1eb97d12}
