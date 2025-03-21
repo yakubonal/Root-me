@@ -1,0 +1,10 @@
+HTTP - POST
+
+- Appuye sur le "give a try"
+- f12 > reseaux 
+- prendre la premiere requête
+- dans body, mettre un score > 999999
+- renvoyer la requête
+- le flag s'affichera dans response
+
+flag : H7tp_h4s_N0_s3Cr37S_F0r_y0U

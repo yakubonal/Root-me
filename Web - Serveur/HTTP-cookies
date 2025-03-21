@@ -1,0 +1,7 @@
+HTTP COOKIES
+
+- F12 > stockage
+- Allez dans les cookies
+- Modifier "visiteur" par "admin"
+- Après avoir rafraichit la page, le mdp devrait s'afficher
+- mdp = ml-SYMPA

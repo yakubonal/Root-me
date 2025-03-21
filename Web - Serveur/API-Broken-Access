@@ -1,0 +1,8 @@
+API BROKEN ACCESS
+
+- creer un utilisateur
+- Connecté vous avec les identifiants de l'utilisateur créée
+- Entree cette url, celle ci renvoie les infos de l'user dont l'ID est  (admin)
+ ==> http://api-broken-access.challenge01.root-me.org/api/user/
+
+flag : RM{E4sy_1d0r_0n_API}
