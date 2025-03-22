@@ -1,0 +1,9 @@
+http redirection invalide
+
+- Lancez burpsuite puis activé l'interception des requêtes
+- Recharger la page du challenge
+- Sur burpsuite, une fois la requête intercepté, faites un click droit puis "send to repeater"
+- modifier l'URL de la requete par index.php (au lieu de login)
+- envoyer la requête
+- le flag est "ExecutionAfterRedirectIsBad"
+
