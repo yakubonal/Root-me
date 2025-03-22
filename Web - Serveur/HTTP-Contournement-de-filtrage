@@ -1,0 +1,8 @@
+HTTP contournement filtrage IP
+
+- Utilisez Burpsuite pour capturer la requête
+- clic droit -> send to repeater
+- Dans le header, ajouter cette ligne : X-Forwarded-For: 192.168.1.100
+- renvoyez la requête
+
+REPONSE : Ip_$po0Fing

@@ -1,0 +1,9 @@
+PHP injection commande
+
+Dans le champs, il est possible de faire un ping : 127.0.0.1
+on peut ajouter une commande (en plus de l'IP) en utilisant un séparateur php (point virgule) : 127.0.0.1; ls -lisa
+La liste des fichiers et dossiers contenue dans le repertoire courant vont s'afficher dont le fichier .passwd
+Il suffit de lire ce fichier : 127.0.0.1; cat .passwd
+Le flag apparait : 
+
+flag : S3rv1ceP1n9Sup3rS3cure
