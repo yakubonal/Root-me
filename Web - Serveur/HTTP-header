@@ -1,0 +1,6 @@
+HTTP Header
+
+- Rafraichir la page
+- Acceder au header
+- modifier la ligne Header-RootMe-Admin: none à Header-RootMe-Admin: 1
+- le flag apparait : HeadersMayBeUseful
