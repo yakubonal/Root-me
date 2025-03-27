@@ -1,0 +1,137 @@
+ Encryption - Known Plaintext 2 - Writeup
+
+Ce challenge est un challenge de cryptographie qui nous fournit un fichier avec une extension inconnue.
+
+L’énoncé du challenge nous donne 3 indices :
+ Je n’aime pas les méthodes de cryptage dures, le XOR classique me suffit.
+ Je n’utilise que des types de fichiers courants
+ La taille de la clé doit vous convenir
+
+D’accord, donc le but du challenge va être de trouver le bon type de fichier et ensuite d’utiliser une attaque XOR clair connu en utilisant les magic bytes.
+
+Trouver le bon type
+
+Commençons par dresser une liste des types de fichiers les plus courants et de leurs magic bytes :
+
+    magic_bytes = {
+        "jpeg":b"\xFF\xD8\xFF\xDB",
+        "png":b"\x89\x50\x4e\x47\x0d\x0a\x1a\x0a",
+        "bmp":b"\x42\x4D",
+        "pdf":b"\x25\x50\x44\x46\x2D",
+        "exe":b"\x4D\x5A"
+    }
+
+Télécharger
+
+Essayons avec eux, si nécessaire nous ajouterons d’autres types par la suite.
+
+Attaque clair connu
+
+Maintenant, codons un peu, nous avons besoin d’une fonction xor :
+
+    def xor(message, key):
+        return bytes([message[i] ^ key[i % len(key)] for i in range(len(message))])
+
+Télécharger
+
+Elle parcourt tous les caractères du message et le xor avec le caractère clé correspondant, quand la clé est finie, on revient au premier caractère de la clé et ainsi de suite...
+
+Retrouver la clef
+
+Maintenant, pour récupérer la clé, il suffit de xor les 8 premiers octets du fichier chiffré avec nos 8 magic bytes.
+
+L’explication mathématique est la suivante :
+
+    chiffré = clef ^ original
+    => clef = original ^ chiffré
+
+Télécharger
+
+Notre code python pour cette partie sera le suivant :
+
+    key = xor(content, magic_bytes)[:len(magic_bytes)]
+
+Déchiffrement du fichier
+
+Maintenant, c’est facile, nous avons notre fonction xor, notre clé, alors appelons simplement xor avec nos informations :
+
+    new_content = xor(content, key)
+
+Il suffit de l’écrire dans un nouveau fichier pour pouvoir l’afficher :
+
+    path = f"file_solve.{extension}"
+    with open(path, "wb") as f:
+        f.write(new_content)
+
+Télécharger
+
+Code de déchiffrement
+
+Voici la partie déchiffrement de notre code python :
+
+    # Fonction xor
+    def xor(message, key):
+        return bytes([message[i] ^ key[i % len(key)] for i in range(len(message))])
+     
+    # Attaque clair connu xor en fonction des magic bytes et de l'extension
+    def xor_known_plaintext(img:str, magic_bytes, extension):
+        # Lire le contenu chiffré
+        with open(img, "rb") as f:
+            content = f.read()
+       
+        # Calculer la clef
+        key = xor(content, magic_bytes)[:len(magic_bytes)]
+     
+        # Retrouver l'original
+        new_content = xor(content, key)
+     
+        # Dump le fichier
+        path = f"file_solve.{extension}"
+        with open(path, "wb") as f:
+            f.write(new_content)
+
+Télécharger
+
+Il ne nous reste plus qu’à parcourir notre dictionnaire magic_bytes, dump et ouvrir chaque fichier un par un jusqu’à ce que nous trouvions notre flag !
+
+Script final
+
+Voici notre script final :
+
+    # Dictionnaire de nos magic bytes (les magic bytes doivent être des bytes)
+    magic_bytes = {
+        "jpeg":b"\xFF\xD8\xFF\xDB",
+        "png":b"\x89\x50\x4e\x47\x0d\x0a\x1a\x0a",
+        "bmp":b"\x42\x4D",
+        "pdf":b"\x25\x50\x44\x46\x2D",
+        "exe":b"\x4D\x5A"
+    }
+     
+    # Fonction xor
+    def xor(message, key):
+        return bytes([message[i] ^ key[i % len(key)] for i in range(len(message))])
+     
+    # Attaque clair connu xor en fonction des magic bytes et de l'extension
+    def xor_known_plaintext(img:str, magic_bytes, extension):
+        # Lire le contenu chiffré
+        with open(img, "rb") as f:
+            content = f.read()
+       
+        # Calculer la clef
+        key = xor(content, magic_bytes)[:len(magic_bytes)]
+     
+        # Retrouver l'original
+        new_content = xor(content, key)
+     
+        # Dump le fichier
+        path = f"file_solve.{extension}"
+        with open(path, "wb") as f:
+            f.write(new_content)
+     
+    # Parcourir le dictionnaire et effectuer l'attaque
+    for ext, mb in magic_bytes.items():
+        xor_known_plaintext("file.xxx", mb, ext)
+
+Télécharger
+
+Il suffit d’exécuter le script et de vérifier les fichiers pour obtenir le flag :)
